@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { AppLayout } from "@/components/AppLayout";
 import { clientFormSchema, passwordResetSchema } from "@/lib/validation";
+import { CareNeedsDialog } from "@/components/clients/CareNeedsDialog";
 
 const Clients = () => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState<any>(null);
   const [newPassword, setNewPassword] = useState("");
   const [resetting, setResetting] = useState(false);
+  const [careNeedsClient, setCareNeedsClient] = useState<any>(null);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -764,6 +766,14 @@ const Clients = () => {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCareNeedsClient(client)}
+                            title="Manage Care Needs"
+                          >
+                            <Heart className="h-4 w-4" />
+                          </Button>
                           {canManageClients && (
                             <>
                               <Button
@@ -1135,6 +1145,17 @@ const Clients = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Care Needs Dialog */}
+      {careNeedsClient && (
+        <CareNeedsDialog
+          open={!!careNeedsClient}
+          onOpenChange={(open) => !open && setCareNeedsClient(null)}
+          clientId={careNeedsClient.id}
+          clientName={`${careNeedsClient.first_name} ${careNeedsClient.last_name}`}
+          onUpdate={() => profile && fetchClients(profile.agency_id)}
+        />
+      )}
       </div>
     </AppLayout>
   );

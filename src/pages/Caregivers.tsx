@@ -18,6 +18,7 @@ import { US_STATES } from "@/constants/usStates";
 import { Separator } from "@/components/ui/separator";
 import { AppLayout } from "@/components/AppLayout";
 import { caregiverFormSchema, passwordResetSchema } from "@/lib/validation";
+import { SkillsDialog } from "@/components/caregivers/SkillsDialog";
 
 
 const Caregivers = () => {
@@ -53,6 +54,7 @@ const Caregivers = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetPasswordCaregiver, setResetPasswordCaregiver] = useState<any>(null);
+  const [skillsCaregiver, setSkillsCaregiver] = useState<any>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -888,6 +890,14 @@ const Caregivers = () => {
                           <Button
                             variant="outline"
                             size="sm"
+                            onClick={() => setSkillsCaregiver(caregiver)}
+                            title="Manage Skills & Certifications"
+                          >
+                            <Award className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleOpenEditDialog(caregiver)}
                           >
                             <Edit className="h-4 w-4" />
@@ -1067,6 +1077,17 @@ const Caregivers = () => {
           caregiver={availabilityCaregiver}
           isOpen={!!availabilityCaregiver}
           onClose={() => setAvailabilityCaregiver(null)}
+        />
+      )}
+
+      {/* Skills Dialog */}
+      {skillsCaregiver && (
+        <SkillsDialog
+          open={!!skillsCaregiver}
+          onOpenChange={(open) => !open && setSkillsCaregiver(null)}
+          caregiverId={skillsCaregiver.id}
+          caregiverName={`${skillsCaregiver.first_name} ${skillsCaregiver.last_name}`}
+          onUpdate={() => user && fetchCaregivers(user.id)}
         />
       )}
       </div>
