@@ -78,3 +78,16 @@ export const careTypeFormSchema = z.object({
     message: "Duration must be a valid positive number",
   }),
 });
+
+export const shiftFormSchema = z.object({
+  client_id: z.string().uuid("Invalid client ID"),
+  caregiver_id: z.string().uuid("Invalid caregiver ID").optional(),
+  shift_date: z.string().min(1, "Shift date is required"),
+  start_time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid start time format (HH:MM)"),
+  end_time: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid end time format (HH:MM)"),
+  duration_hours: z.number().min(0.5, "Duration must be at least 0.5 hours").max(24, "Duration cannot exceed 24 hours"),
+  care_type_code: z.string().min(1, "Care type is required"),
+  pay_rate: z.number().min(0, "Pay rate must be positive").optional(),
+  special_notes: z.string().max(500, "Notes too long").optional(),
+  order_title: z.string().max(200, "Title too long").optional(),
+});
