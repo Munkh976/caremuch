@@ -68,6 +68,338 @@ export type Database = {
         }
         Relationships: []
       }
+      bonus_calculation_log: {
+        Row: {
+          agency_id: string
+          calculation_details: Json
+          calculation_type: string
+          caregiver_id: string | null
+          created_at: string | null
+          id: string
+          input_values: Json
+          related_id: string | null
+          result_value: number
+          year_month: number | null
+        }
+        Insert: {
+          agency_id: string
+          calculation_details: Json
+          calculation_type: string
+          caregiver_id?: string | null
+          created_at?: string | null
+          id?: string
+          input_values: Json
+          related_id?: string | null
+          result_value: number
+          year_month?: number | null
+        }
+        Update: {
+          agency_id?: string
+          calculation_details?: Json
+          calculation_type?: string
+          caregiver_id?: string | null
+          created_at?: string | null
+          id?: string
+          input_values?: Json
+          related_id?: string | null
+          result_value?: number
+          year_month?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bonus_calculation_log_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agency"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bonus_calculation_log_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bonus_multiplier_rules: {
+        Row: {
+          condition_operator: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          multiplier_adjustment: number
+          priority: number | null
+          rule_name: string
+          settings_id: string
+          threshold_value: number
+          trigger_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          condition_operator: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          multiplier_adjustment: number
+          priority?: number | null
+          rule_name: string
+          settings_id: string
+          threshold_value: number
+          trigger_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          condition_operator?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          multiplier_adjustment?: number
+          priority?: number | null
+          rule_name?: string
+          settings_id?: string
+          threshold_value?: number
+          trigger_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bonus_multiplier_rules_settings_id_fkey"
+            columns: ["settings_id"]
+            isOneToOne: false
+            referencedRelation: "bonus_system_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bonus_system_settings: {
+        Row: {
+          agency_id: string
+          auto_reduce_if_low_budget: boolean | null
+          budget_threshold_percent: number | null
+          client_satisfaction_threshold: number | null
+          created_at: string | null
+          current_multiplier: number | null
+          id: string
+          is_active: boolean | null
+          max_multiplier: number | null
+          max_override_per_person: number | null
+          max_referrals_per_person: number | null
+          min_multiplier: number | null
+          min_team_size: number | null
+          monthly_budget: number | null
+          override_base_rate: number | null
+          override_quality_bonus_rate: number | null
+          payout_frequency: string | null
+          referral_base_amount: number | null
+          referral_qualification_days: number | null
+          referral_required_hours: number | null
+          team_leader_base_per_member: number | null
+          team_leader_min_referrals: number | null
+          team_leader_min_satisfaction: number | null
+          team_leader_min_tenure_months: number | null
+          team_leader_pool_share_percent: number | null
+          team_pool_base_per_person: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          agency_id: string
+          auto_reduce_if_low_budget?: boolean | null
+          budget_threshold_percent?: number | null
+          client_satisfaction_threshold?: number | null
+          created_at?: string | null
+          current_multiplier?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_multiplier?: number | null
+          max_override_per_person?: number | null
+          max_referrals_per_person?: number | null
+          min_multiplier?: number | null
+          min_team_size?: number | null
+          monthly_budget?: number | null
+          override_base_rate?: number | null
+          override_quality_bonus_rate?: number | null
+          payout_frequency?: string | null
+          referral_base_amount?: number | null
+          referral_qualification_days?: number | null
+          referral_required_hours?: number | null
+          team_leader_base_per_member?: number | null
+          team_leader_min_referrals?: number | null
+          team_leader_min_satisfaction?: number | null
+          team_leader_min_tenure_months?: number | null
+          team_leader_pool_share_percent?: number | null
+          team_pool_base_per_person?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          agency_id?: string
+          auto_reduce_if_low_budget?: boolean | null
+          budget_threshold_percent?: number | null
+          client_satisfaction_threshold?: number | null
+          created_at?: string | null
+          current_multiplier?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_multiplier?: number | null
+          max_override_per_person?: number | null
+          max_referrals_per_person?: number | null
+          min_multiplier?: number | null
+          min_team_size?: number | null
+          monthly_budget?: number | null
+          override_base_rate?: number | null
+          override_quality_bonus_rate?: number | null
+          payout_frequency?: string | null
+          referral_base_amount?: number | null
+          referral_qualification_days?: number | null
+          referral_required_hours?: number | null
+          team_leader_base_per_member?: number | null
+          team_leader_min_referrals?: number | null
+          team_leader_min_satisfaction?: number | null
+          team_leader_min_tenure_months?: number | null
+          team_leader_pool_share_percent?: number | null
+          team_pool_base_per_person?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bonus_system_settings_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: true
+            referencedRelation: "agency"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bonus_team_members: {
+        Row: {
+          caregiver_id: string
+          created_at: string | null
+          id: string
+          joined_date: string
+          left_date: string | null
+          performance_share_percent: number | null
+          performance_tier: string | null
+          referral_id: string | null
+          status: string | null
+          team_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          caregiver_id: string
+          created_at?: string | null
+          id?: string
+          joined_date?: string
+          left_date?: string | null
+          performance_share_percent?: number | null
+          performance_tier?: string | null
+          referral_id?: string | null
+          status?: string | null
+          team_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          caregiver_id?: string
+          created_at?: string | null
+          id?: string
+          joined_date?: string
+          left_date?: string | null
+          performance_share_percent?: number | null
+          performance_tier?: string | null
+          referral_id?: string | null
+          status?: string | null
+          team_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bonus_team_members_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bonus_team_members_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "caregiver_referrals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bonus_team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "bonus_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bonus_teams: {
+        Row: {
+          agency_id: string
+          cancellations_this_month: number | null
+          created_at: string | null
+          current_attendance_rate: number | null
+          current_nps: number | null
+          current_retention_rate: number | null
+          current_satisfaction: number | null
+          current_size: number | null
+          formed_date: string
+          id: string
+          status: string | null
+          team_leader_id: string
+          team_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agency_id: string
+          cancellations_this_month?: number | null
+          created_at?: string | null
+          current_attendance_rate?: number | null
+          current_nps?: number | null
+          current_retention_rate?: number | null
+          current_satisfaction?: number | null
+          current_size?: number | null
+          formed_date?: string
+          id?: string
+          status?: string | null
+          team_leader_id: string
+          team_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agency_id?: string
+          cancellations_this_month?: number | null
+          created_at?: string | null
+          current_attendance_rate?: number | null
+          current_nps?: number | null
+          current_retention_rate?: number | null
+          current_satisfaction?: number | null
+          current_size?: number | null
+          formed_date?: string
+          id?: string
+          status?: string | null
+          team_leader_id?: string
+          team_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bonus_teams_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agency"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bonus_teams_team_leader_id_fkey"
+            columns: ["team_leader_id"]
+            isOneToOne: true
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       care_types: {
         Row: {
           category: string
@@ -192,6 +524,88 @@ export type Database = {
           {
             foreignKeyName: "caregiver_certifications_caregiver_id_fkey"
             columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      caregiver_referrals: {
+        Row: {
+          agency_id: string
+          created_at: string | null
+          days_employed: number | null
+          hours_worked: number | null
+          id: string
+          qualification_date: string | null
+          quality_bonus_active: boolean | null
+          referral_date: string
+          referred_id: string
+          referred_satisfaction_score: number | null
+          referrer_id: string
+          status: string | null
+          tier1_amount: number | null
+          tier1_bonus_paid: boolean | null
+          tier1_multiplier_applied: number | null
+          tier1_paid_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string | null
+          days_employed?: number | null
+          hours_worked?: number | null
+          id?: string
+          qualification_date?: string | null
+          quality_bonus_active?: boolean | null
+          referral_date?: string
+          referred_id: string
+          referred_satisfaction_score?: number | null
+          referrer_id: string
+          status?: string | null
+          tier1_amount?: number | null
+          tier1_bonus_paid?: boolean | null
+          tier1_multiplier_applied?: number | null
+          tier1_paid_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string | null
+          days_employed?: number | null
+          hours_worked?: number | null
+          id?: string
+          qualification_date?: string | null
+          quality_bonus_active?: boolean | null
+          referral_date?: string
+          referred_id?: string
+          referred_satisfaction_score?: number | null
+          referrer_id?: string
+          status?: string | null
+          tier1_amount?: number | null
+          tier1_bonus_paid?: boolean | null
+          tier1_multiplier_applied?: number | null
+          tier1_paid_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caregiver_referrals_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agency"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caregiver_referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caregiver_referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
             isOneToOne: false
             referencedRelation: "caregivers"
             referencedColumns: ["id"]
@@ -619,6 +1033,92 @@ export type Database = {
           },
         ]
       }
+      override_earnings: {
+        Row: {
+          agency_id: string
+          billable_revenue: number
+          calculated_amount: number
+          capped_amount: number | null
+          created_at: string | null
+          id: string
+          multiplier_applied: number
+          override_rate: number
+          paid_date: string | null
+          quality_bonus_rate: number | null
+          referral_id: string
+          referred_id: string
+          referrer_id: string
+          status: string | null
+          updated_at: string | null
+          year_month: number
+        }
+        Insert: {
+          agency_id: string
+          billable_revenue?: number
+          calculated_amount: number
+          capped_amount?: number | null
+          created_at?: string | null
+          id?: string
+          multiplier_applied: number
+          override_rate: number
+          paid_date?: string | null
+          quality_bonus_rate?: number | null
+          referral_id: string
+          referred_id: string
+          referrer_id: string
+          status?: string | null
+          updated_at?: string | null
+          year_month: number
+        }
+        Update: {
+          agency_id?: string
+          billable_revenue?: number
+          calculated_amount?: number
+          capped_amount?: number | null
+          created_at?: string | null
+          id?: string
+          multiplier_applied?: number
+          override_rate?: number
+          paid_date?: string | null
+          quality_bonus_rate?: number | null
+          referral_id?: string
+          referred_id?: string
+          referrer_id?: string
+          status?: string | null
+          updated_at?: string | null
+          year_month?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "override_earnings_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agency"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "override_earnings_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "caregiver_referrals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "override_earnings_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "override_earnings_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           agency_id: string
@@ -1023,6 +1523,135 @@ export type Database = {
         }
         Relationships: []
       }
+      team_bonus_payouts: {
+        Row: {
+          agency_id: string
+          base_amount: number | null
+          caregiver_id: string
+          created_at: string | null
+          id: string
+          multiplier_applied: number | null
+          paid_date: string | null
+          payout_type: string
+          performance_bonuses: number | null
+          pool_share: number | null
+          status: string | null
+          team_id: string
+          team_score_applied: number | null
+          total_amount: number
+          updated_at: string | null
+          year_month: number
+        }
+        Insert: {
+          agency_id: string
+          base_amount?: number | null
+          caregiver_id: string
+          created_at?: string | null
+          id?: string
+          multiplier_applied?: number | null
+          paid_date?: string | null
+          payout_type: string
+          performance_bonuses?: number | null
+          pool_share?: number | null
+          status?: string | null
+          team_id: string
+          team_score_applied?: number | null
+          total_amount: number
+          updated_at?: string | null
+          year_month: number
+        }
+        Update: {
+          agency_id?: string
+          base_amount?: number | null
+          caregiver_id?: string
+          created_at?: string | null
+          id?: string
+          multiplier_applied?: number | null
+          paid_date?: string | null
+          payout_type?: string
+          performance_bonuses?: number | null
+          pool_share?: number | null
+          status?: string | null
+          team_id?: string
+          team_score_applied?: number | null
+          total_amount?: number
+          updated_at?: string | null
+          year_month?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_bonus_payouts_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agency"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_bonus_payouts_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "caregivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_bonus_payouts_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "bonus_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_bonus_performance_criteria: {
+        Row: {
+          applies_to: string | null
+          bonus_amount: number
+          condition_operator: string
+          created_at: string | null
+          criteria_name: string
+          criteria_type: string
+          id: string
+          is_active: boolean | null
+          settings_id: string
+          threshold_value: number
+          updated_at: string | null
+        }
+        Insert: {
+          applies_to?: string | null
+          bonus_amount: number
+          condition_operator: string
+          created_at?: string | null
+          criteria_name: string
+          criteria_type: string
+          id?: string
+          is_active?: boolean | null
+          settings_id: string
+          threshold_value: number
+          updated_at?: string | null
+        }
+        Update: {
+          applies_to?: string | null
+          bonus_amount?: number
+          condition_operator?: string
+          created_at?: string | null
+          criteria_name?: string
+          criteria_type?: string
+          id?: string
+          is_active?: boolean | null
+          settings_id?: string
+          threshold_value?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_bonus_performance_criteria_settings_id_fkey"
+            columns: ["settings_id"]
+            isOneToOne: false
+            referencedRelation: "bonus_system_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       time_off_requests: {
         Row: {
           approved_by_user_id: string | null
@@ -1116,6 +1745,22 @@ export type Database = {
       assign_caregiver_role: {
         Args: { caregiver_email: string }
         Returns: undefined
+      }
+      calculate_caregiver_hours: {
+        Args: {
+          p_caregiver_id: string
+          p_end_date: string
+          p_start_date: string
+        }
+        Returns: number
+      }
+      calculate_caregiver_monthly_revenue: {
+        Args: { p_caregiver_id: string; p_year_month: number }
+        Returns: number
+      }
+      check_team_leader_eligibility: {
+        Args: { p_caregiver_id: string }
+        Returns: boolean
       }
       generate_order_number: { Args: never; Returns: string }
       get_caregiver_with_profile: {
