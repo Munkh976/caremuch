@@ -85,6 +85,7 @@ export const usePermissions = () => {
         caregiver_time_off: "/caregiver-time-off",
         caregiver_settings: "/caregiver-settings",
         client_dashboard: "/client-dashboard",
+        referral_program: "/referral-program",
       };
 
       const formattedPermissions: Permission[] = (permissionsData || []).map((p: any) => ({

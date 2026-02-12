@@ -22,6 +22,7 @@ import {
   Settings,
   Shield,
   Building2,
+  Gift,
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -72,6 +73,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     caregiver_time_off: Clock,
     caregiver_settings: Settings,
     client_dashboard: LayoutDashboard,
+    referral_program: Gift,
   };
 
   // Build menu items from permissions
