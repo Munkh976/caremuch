@@ -35,6 +35,7 @@ import CaregiverSettings from "./pages/CaregiverSettings";
 import AutoSchedule from "./pages/AutoSchedule";
 import Reports from "./pages/Reports";
 import AdminUserManagement from "./pages/AdminUserManagement";
+import ReferralProgram from "./pages/ReferralProgram";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ const App = () => (
           <Route path="/auto-schedule" element={<AutoSchedule />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
+          <Route path="/referral-program" element={<ReferralProgram />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
