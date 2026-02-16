@@ -72,7 +72,7 @@ const CaregiverRegistration = () => {
       await supabase.auth.signOut();
 
       toast.success("Registration submitted successfully! You can log in once your application is approved.");
-      navigate("/auth");
+      navigate("/caregiver-login");
     } catch (error: any) {
       toast.error(error.message || "Failed to submit registration");
     } finally {
@@ -83,9 +83,9 @@ const CaregiverRegistration = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <div className="container mx-auto max-w-3xl py-8">
-        <Button variant="ghost" onClick={() => navigate("/auth")} className="mb-4">
+        <Button variant="ghost" onClick={() => navigate("/")} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Login
+          Back to Home
         </Button>
 
         <div className="text-center mb-8">
