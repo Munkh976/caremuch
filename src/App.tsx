@@ -5,6 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import AboutUs from "./pages/AboutUs";
+import Services from "./pages/Services";
+import Testimonials from "./pages/Testimonials";
+import FAQ from "./pages/FAQ";
+import Contact from "./pages/Contact";
+import CaregiverLogin from "./pages/CaregiverLogin";
+import ClientLogin from "./pages/ClientLogin";
+import AdminLogin from "./pages/AdminLogin";
+import ClientRegistration from "./pages/ClientRegistration";
 import Dashboard from "./pages/Dashboard";
 import Schedule from "./pages/Schedule";
 import Caregivers from "./pages/Caregivers";
@@ -46,8 +55,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public Marketing Pages */}
           <Route path="/" element={<Index />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/contact" element={<Contact />} />
+
+          {/* Portal Login Pages */}
+          <Route path="/caregiver-login" element={<CaregiverLogin />} />
+          <Route path="/client-login" element={<ClientLogin />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/auth" element={<Auth />} />
+
+          {/* Registration Pages */}
+          <Route path="/caregiver-registration" element={<CaregiverRegistration />} />
+          <Route path="/client-registration" element={<ClientRegistration />} />
+
+          {/* Staff Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/caregivers" element={<Caregivers />} />
@@ -56,10 +82,7 @@ const App = () => (
           <Route path="/live-operations" element={<LiveOperations />} />
           <Route path="/quick-assign" element={<QuickAssign />} />
           <Route path="/shift-trades" element={<ShiftTrades />} />
-          <Route path="/caregiver-registration" element={<CaregiverRegistration />} />
           <Route path="/caregiver-approvals" element={<CaregiverApprovals />} />
-          <Route path="/caregiver-dashboard" element={<CaregiverDashboard />} />
-          <Route path="/client-dashboard" element={<ClientDashboard />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/add" element={<AddUser />} />
           <Route path="/users/edit/:id" element={<EditUser />} />
@@ -70,16 +93,23 @@ const App = () => (
           <Route path="/system-admin" element={<SystemAdminDashboard />} />
           <Route path="/care-types" element={<CareTypes />} />
           <Route path="/order-management" element={<OrderManagement />} />
-          <Route path="/available-shifts" element={<AvailableShifts />} />
-          <Route path="/caregiver-time-off" element={<CaregiverTimeOff />} />
-          <Route path="/caregiver-settings" element={<CaregiverSettings />} />
           <Route path="/admin-utilities" element={<AdminUtilities />} />
           <Route path="/agency-settings" element={<AgencySettings />} />
           <Route path="/auto-schedule" element={<AutoSchedule />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
           <Route path="/referral-program" element={<ReferralProgram />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+          {/* Caregiver Portal Routes */}
+          <Route path="/caregiver-dashboard" element={<CaregiverDashboard />} />
+          <Route path="/available-shifts" element={<AvailableShifts />} />
+          <Route path="/caregiver-time-off" element={<CaregiverTimeOff />} />
+          <Route path="/caregiver-settings" element={<CaregiverSettings />} />
+
+          {/* Client Portal Routes */}
+          <Route path="/client-dashboard" element={<ClientDashboard />} />
+
+          {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
