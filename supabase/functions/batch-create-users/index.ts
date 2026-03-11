@@ -24,11 +24,24 @@ serve(async (req) => {
     );
 
     const defaultPassword = "123456";
-    const agencyId = "56fbfe38-e8eb-40c1-ba27-07428f62ed2e";
-    const preservedEmails = ["munkh.mn@gmail.com"];
-    
+    const preservedEmails = ["admin@test.com", "munkh.mn@gmail.com"];
+
+    // Get the single agency
+    const { data: agencyData, error: agencyError } = await supabaseAdmin
+      .from("agency")
+      .select("id")
+      .limit(1)
+      .single();
+
+    if (agencyError || !agencyData) {
+      throw new Error("No agency found. Please create an agency first.");
+    }
+
+    const agencyId = agencyData.id;
+
     const results = {
       deleted: 0,
+      admins_preserved: [] as string[],
       clients: [] as any[],
       caregivers: [] as any[],
       errors: [] as any[],
@@ -38,17 +51,12 @@ serve(async (req) => {
     const { data: { users: allUsers }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) throw listError;
 
-    // Identify system_admin and preserved accounts
+    // Identify preserved accounts (admins + specified emails)
     const preservedUserIds: string[] = [];
     for (const user of allUsers || []) {
-      const { data: roleData } = await supabaseAdmin
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .single();
-      
-      if (roleData?.role === "system_admin" || preservedEmails.includes(user.email || "")) {
+      if (preservedEmails.includes(user.email || "")) {
         preservedUserIds.push(user.id);
+        results.admins_preserved.push(user.email || "");
       }
     }
 
@@ -65,62 +73,90 @@ serve(async (req) => {
     }
 
     // Reset user_id in clients and caregivers tables
-    await supabaseAdmin.from("clients").update({ user_id: null }).neq("user_id", null);
-    await supabaseAdmin.from("caregivers").update({ user_id: null }).neq("user_id", null);
+    await supabaseAdmin.from("clients").update({ user_id: null }).neq("id", "00000000-0000-0000-0000-000000000000");
+    await supabaseAdmin.from("caregivers").update({ user_id: null }).neq("id", "00000000-0000-0000-0000-000000000000");
 
-    // Fetch all clients
-    const { data: clients, error: clientsError } = await supabaseAdmin
-      .from("clients")
-      .select("*");
+    // Ensure preserved admin users have proper roles and profiles
+    for (const userId of preservedUserIds) {
+      const user = (allUsers || []).find(u => u.id === userId);
+      if (!user) continue;
 
-    if (clientsError) throw clientsError;
+      // Ensure profile exists
+      const { data: existingProfile } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("id", userId)
+        .single();
 
-    // Create users for clients
+      if (!existingProfile) {
+        await supabaseAdmin.from("profiles").insert({
+          id: userId,
+          email: user.email || "",
+          full_name: user.user_metadata?.full_name || user.email || "",
+          agency_id: agencyId,
+        });
+      } else {
+        await supabaseAdmin.from("profiles")
+          .update({ agency_id: agencyId })
+          .eq("id", userId);
+      }
+
+      // Ensure admin role exists
+      const { data: existingRole } = await supabaseAdmin
+        .from("user_roles")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("role", "system_admin")
+        .single();
+
+      if (!existingRole) {
+        await supabaseAdmin.from("user_roles").insert({
+          user_id: userId,
+          role: "system_admin",
+          agency_id: agencyId,
+        });
+      }
+    }
+
+    // Create users for all clients
+    const { data: clients } = await supabaseAdmin.from("clients").select("*");
+
     for (const client of clients || []) {
+      if (!client.email) {
+        results.errors.push({ type: "client", name: `${client.first_name} ${client.last_name}`, error: "No email" });
+        continue;
+      }
       try {
-        // Create auth user
         const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
           email: client.email,
           password: defaultPassword,
           email_confirm: true,
           user_metadata: {
             full_name: `${client.first_name} ${client.last_name}`,
+            agency_id: agencyId,
           },
         });
-
         if (authError) throw authError;
 
-        // Create profile
-        const { error: profileError } = await supabaseAdmin
-          .from("profiles")
-          .insert({
-            id: authUser.user.id,
-            email: client.email,
-            full_name: `${client.first_name} ${client.last_name}`,
-            phone: client.phone,
-            agency_id: agencyId,
-          });
+        // Wait for profile trigger
+        await new Promise(r => setTimeout(r, 300));
 
-        if (profileError) throw profileError;
+        // Ensure profile has correct agency
+        await supabaseAdmin.from("profiles")
+          .update({ agency_id: agencyId, phone: client.phone })
+          .eq("id", authUser.user.id);
 
-        // Update client with user_id
-        const { error: updateError } = await supabaseAdmin
-          .from("clients")
+        // Link client record
+        await supabaseAdmin.from("clients")
           .update({ user_id: authUser.user.id })
           .eq("id", client.id);
 
-        if (updateError) throw updateError;
-
-        // Create user role
-        const { error: roleError } = await supabaseAdmin
-          .from("user_roles")
-          .insert({
-            user_id: authUser.user.id,
-            role: "client",
-            agency_id: agencyId,
-          });
-
-        if (roleError) throw roleError;
+        // Assign client role
+        await supabaseAdmin.from("user_roles").insert({
+          user_id: authUser.user.id,
+          role: "client",
+          agency_id: agencyId,
+        });
 
         results.clients.push({
           email: client.email,
@@ -136,59 +172,37 @@ serve(async (req) => {
       }
     }
 
-    // Fetch all caregivers
-    const { data: caregivers, error: caregiversError } = await supabaseAdmin
-      .from("caregivers")
-      .select("*");
+    // Create users for all caregivers
+    const { data: caregivers } = await supabaseAdmin.from("caregivers").select("*");
 
-    if (caregiversError) throw caregiversError;
-
-    // Create users for caregivers
     for (const caregiver of caregivers || []) {
       try {
-        // Create auth user
         const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
           email: caregiver.email,
           password: defaultPassword,
           email_confirm: true,
           user_metadata: {
             full_name: `${caregiver.first_name} ${caregiver.last_name}`,
+            agency_id: agencyId,
           },
         });
-
         if (authError) throw authError;
 
-        // Create profile
-        const { error: profileError } = await supabaseAdmin
-          .from("profiles")
-          .insert({
-            id: authUser.user.id,
-            email: caregiver.email,
-            full_name: `${caregiver.first_name} ${caregiver.last_name}`,
-            phone: caregiver.phone,
-            agency_id: agencyId,
-          });
+        await new Promise(r => setTimeout(r, 300));
 
-        if (profileError) throw profileError;
+        await supabaseAdmin.from("profiles")
+          .update({ agency_id: agencyId, phone: caregiver.phone })
+          .eq("id", authUser.user.id);
 
-        // Update caregiver with user_id
-        const { error: updateError } = await supabaseAdmin
-          .from("caregivers")
+        await supabaseAdmin.from("caregivers")
           .update({ user_id: authUser.user.id })
           .eq("id", caregiver.id);
 
-        if (updateError) throw updateError;
-
-        // Create user role
-        const { error: roleError } = await supabaseAdmin
-          .from("user_roles")
-          .insert({
-            user_id: authUser.user.id,
-            role: "caregiver",
-            agency_id: agencyId,
-          });
-
-        if (roleError) throw roleError;
+        await supabaseAdmin.from("user_roles").insert({
+          user_id: authUser.user.id,
+          role: "caregiver",
+          agency_id: agencyId,
+        });
 
         results.caregivers.push({
           email: caregiver.email,
@@ -207,7 +221,8 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Deleted ${results.deleted} users. Created ${results.clients.length} client users and ${results.caregivers.length} caregiver users`,
+        agencyId,
+        message: `Preserved ${results.admins_preserved.length} admins. Deleted ${results.deleted} old users. Created ${results.clients.length} client users and ${results.caregivers.length} caregiver users.`,
         results,
       }),
       {
