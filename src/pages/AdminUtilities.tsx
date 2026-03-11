@@ -254,8 +254,9 @@ const AdminUtilities = () => {
             <div className="border-b pb-6">
               <h3 className="text-lg font-semibold mb-2">Batch Create User Accounts</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                This will create user accounts with default password "123456" for all clients and caregivers 
-                that don't have user accounts yet. It will also create their profiles and assign appropriate roles.
+                Resets all user accounts and recreates them for the single-agency model. Creates client portal 
+                users (role: client) and caregiver portal users (role: caregiver) with default password "123456". 
+                Preserves admin@test.com and munkh.mn@gmail.com as system admins.
               </p>
               <Button 
                 onClick={handleBatchCreateUsers} 
