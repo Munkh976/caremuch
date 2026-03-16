@@ -50,7 +50,26 @@ const ClientRegistration = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error("Failed to create account");
 
-      // Sign out immediately — admin will approve and set up client record
+      // Store registration data in staging table
+      const { error: regError } = await supabase.from("client_registrations").insert({
+        email: formData.email,
+        phone: formData.phone,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        address: formData.address || null,
+        city: formData.city || null,
+        state: formData.state || null,
+        zip_code: formData.zipCode || null,
+        date_of_birth: formData.dateOfBirth || null,
+        emergency_contact_name: formData.emergencyContactName || null,
+        emergency_contact_phone: formData.emergencyContactPhone || null,
+        notes: formData.notes || null,
+        status: "pending",
+      });
+
+      if (regError) throw regError;
+
+      // Sign out immediately — admin will approve
       await supabase.auth.signOut();
 
       toast.success(
